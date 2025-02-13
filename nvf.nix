@@ -289,6 +289,39 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
           require'trouble'.setup()
         '';
       };
+      "cmake-tools.nvim" = {
+        package = cmake-tools-nvim;
+        ft = ["c" "cpp" "h" "hpp"];
+        after = /*lua*/''
+        require'cmake-tools'.setup{ 
+          cmake_dap_configuration = { -- debug settings for cmake
+            name = "cpp",
+            type = "gdb",
+            request = "launch",
+            stopOnEntry = false,
+            runInTerminal = true,
+            console = "integratedTerminal",
+          },
+          toggleterm = {
+            direction = "float", -- 'vertical' | 'horizontal' | 'tab' | 'float'
+            close_on_exit = false, -- whether close the terminal when exit
+            auto_scroll = true, -- whether auto scroll to the bottom
+          },
+          overseer = {
+            new_task_opts = {
+                strategy = {
+                    "toggleterm",
+                    direction = "horizontal",
+                    autos_croll = true,
+                    quit_on_exit = "success"
+                }
+            }, -- options to pass into the `overseer.new_task` command
+            on_new_task = function(task)
+            end,   -- a function that gets overseer.Task when it is created, before calling `task:start`
+          },
+        }
+        '';
+      };
     };
   };
 
