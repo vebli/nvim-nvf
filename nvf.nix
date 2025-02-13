@@ -1,120 +1,6 @@
 {pkgs, lib, ...}:
 {
   vim = {
-    luaConfigRC.myconfig = /*lua*/ ''
---- OPTIONS ---
-
-local opt = vim.opt
-local g = vim.g
-
--- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
--- vim.api.nvim_set_hl(0, "NormalFloats", { bg = "none" })
-
-opt.laststatus = 3 -- global statusline
-opt.showmode = false
-
-opt.clipboard = "unnamedplus"
-opt.cursorline = true
--- Indenting
-opt.expandtab = true
-opt.shiftwidth = 2
-opt.smartindent = true
-opt.tabstop = 2
-opt.softtabstop = 2
-vim.cmd('filetype plugin indent on')
-vim.o.autoindent = true
-
-opt.fillchars = { eob = " " }
-opt.ignorecase = true
-opt.smartcase = true
-opt.mouse = "a"
-
--- Numbers
-opt.number = true
-opt.numberwidth = 2
-opt.ruler = false
-vim.wo.relativenumber = true
-
--- Folding
-local vim = vim
-local opt = vim.opt
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-vim.o.foldlevelstart = 99
---open folds by default
-vim.cmd([[ set nofoldenable]])
-
--- disable nvim intro
-opt.shortmess:append "sI"
-
-opt.signcolumn = "yes"
-opt.splitbelow = true
-opt.splitright = true
-opt.termguicolors = true
-opt.timeoutlen = 400
-opt.undofile = true
-
--- interval for writing swap file to disk, also used by gitsigns
-opt.updatetime = 250
-
--- go to previous/next line with h,l,left arrow and right arrow
--- when cursor reaches end/beginning of line
-opt.whichwrap:append "<>[]hl"
-
-
--- disable some default providers
-for _, provider in ipairs { "node", "perl", "python3", "ruby" } do
-    vim.g["loaded_" .. provider .. "_provider"] = 0
-end
-
---- KEYMAPS ---
-vim.g.mapleader = " "
-local keymap = vim.api.nvim_set_keymap
-local opts = {noremap = true}
-local function nmap(key, map)
-  keymap('n', key, map, opts)
-end
-
---- Built-in ---
-nmap('<leader>bn', ':bnext<CR>')
-nmap('<leader>bp', ':bprevious<CR>')
-nmap('<leader>nh', ':noh<CR>')
-
---- Telescope ---
-nmap('<leader>ff', ':Telescope find_files<CR>')
-nmap('<leader>fg', ':Telescope git_files<CR>')
-nmap('<leader>bm', ':Telescope buffers<CR>')
-nmap('<leader>qf', ':Telescope quickfix<CR>')
-
-
-
---- LSP ---
-nmap('<leader>fc', ':ClangdSwitchSourceHeader')
-nmap('gd' ,':lua vim.lsp.buf.definition()<cr>')
-nmap('<leader>rn', ':lua vim.lsp.buf.rename()<cr>')
-nmap('K', '<cmd>lua vim.lsp.buf.hover()<CR>')
-nmap("<leader>fm", "<cmd>lua vim.lsp.buf.format()<CR>")
-
---- CMake Tools ---
-nmap('<leader>cm', ':CMakeRun<CR>')
-
---- DAP (Debugger) ---
-nmap('<leader>di', ':CMakeDebug<CR>')
-nmap('<leader>db', ':lua require("dap").toggle_breakpoint()<CR>')
-nmap('<leader>dc', ':lua require("dap").continue()<CR>')
-nmap('<leader>ds', ':lua require("dap").step_over()<CR>')
-
---- DB ---
-nmap('<leader>dad', ':DBUIToggle<CR>')
-
--- Oil
-nmap('-', '<CMD>Oil<CR>')
-
--- Trouble 
-nmap('<leader>tt', ':ToggleTerm<CR>')
-nmap('<leader>ti', ':Trouble diagnostics toggle pinned=true win.relative=win win.position=bottom<CR>')
-nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.position=right<CR>')
-    '';
     spellcheck = {
       enable = true;
       languages = ["en" "de"];
@@ -125,12 +11,29 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
       style = "main";
     };
     statusline.lualine.enable  = true;
-    autocomplete.nvim-cmp.enable = true;
+    autocomplete.nvim-cmp = {
+    enable = true;
+    mappings = {
+      confirm = "<Tab>";
+      next = "<C-n>";
+      previous = "<C-p>";
+    };
+  };
     autopairs.nvim-autopairs.enable = true;
+    useSystemClipboard = true;
     
+    visuals = {
+      nvim-web-devicons.enable = true;
+      rainbow-delimiters.enable = true;
+    };
+
+    ui.borders.enable = true;
+
     languages = {
       enableLSP = true;
       enableTreesitter = true;
+      enableFormat = true;
+      enableDAP = true;
 
       assembly.enable  = true;
       bash.enable = true;
@@ -156,8 +59,6 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
       sql.enable = true;
       tailwind.enable = true;
       zig.enable = true;
-
-
     };
 
     lazy.plugins = with pkgs.vimPlugins; {
@@ -208,7 +109,7 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
           alpha.setup(dashboard.opts)
 
 
-          '';
+        '';
       };
       "vimtex" = {
         package = vimtex;
@@ -219,7 +120,7 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
         cmd = "GodBolt";
         after = ''
           require'godbolt'.setup()
-          '';
+        '';
       };
       "nvim-highlight-colors" = {
         package = nvim-highlight-colors;
@@ -252,7 +153,9 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
         event =  ["BufReadPost" "BufNewFile"];
         after = ''
           require"lsp_signature".setup({
-              border = 'none',
+              handler_opts = {
+                border = "rounded"
+              },
               hint_enable = false,
             })
         '';
@@ -309,21 +212,135 @@ nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.pos
           },
           overseer = {
             new_task_opts = {
-                strategy = {
-                    "toggleterm",
-                    direction = "horizontal",
-                    autos_croll = true,
-                    quit_on_exit = "success"
-                }
+              strategy = {
+                "toggleterm",
+                direction = "horizontal",
+                autos_croll = true,
+                quit_on_exit = "success"
+              }
             }, -- options to pass into the `overseer.new_task` command
             on_new_task = function(task)
             end,   -- a function that gets overseer.Task when it is created, before calling `task:start`
           },
         }
         '';
-      };
-    };
+        };
+        };
+        luaConfigRC.myconfig = /*lua*/ ''
+        --- OPTIONS ---
+
+        local opt = vim.opt
+        local g = vim.g
+
+        -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+        -- vim.api.nvim_set_hl(0, "NormalFloats", { bg = "none" })
+
+        opt.laststatus = 3 -- global statusline
+        opt.showmode = false
+
+        opt.clipboard = "unnamedplus"
+        opt.cursorline = true
+        -- Indenting
+        opt.expandtab = true
+        opt.shiftwidth = 2
+        opt.smartindent = true
+        opt.tabstop = 2
+        opt.softtabstop = 2
+        vim.cmd('filetype plugin indent on')
+        vim.o.autoindent = true
+
+        opt.fillchars = { eob = " " }
+        opt.ignorecase = true
+        opt.smartcase = true
+        opt.mouse = "a"
+
+        -- Numbers
+        opt.number = true
+        opt.numberwidth = 2
+        opt.ruler = false
+        vim.wo.relativenumber = true
+
+        -- Folding
+        local vim = vim
+        local opt = vim.opt
+        vim.opt.foldmethod = "expr"
+        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+        vim.o.foldlevelstart = 99
+        --open folds by default
+        vim.cmd([[ set nofoldenable]])
+
+        -- disable nvim intro
+        opt.shortmess:append "sI"
+
+        opt.signcolumn = "yes"
+        opt.splitbelow = true
+        opt.splitright = true
+        opt.termguicolors = true
+        opt.timeoutlen = 400
+        opt.undofile = true
+
+        -- interval for writing swap file to disk, also used by gitsigns
+        opt.updatetime = 250
+
+        -- go to previous/next line with h,l,left arrow and right arrow
+        -- when cursor reaches end/beginning of line
+        opt.whichwrap:append "<>[]hl"
+
+
+        -- disable some default providers
+        for _, provider in ipairs { "node", "perl", "python3", "ruby" } do
+          vim.g["loaded_" .. provider .. "_provider"] = 0
+        end
+
+        --- KEYMAPS ---
+        vim.g.mapleader = " "
+        local keymap = vim.api.nvim_set_keymap
+        local opts = {noremap = true}
+        local function nmap(key, map)
+          keymap('n', key, map, opts)
+        end
+
+        --- Built-in ---
+        nmap('<leader>bn', ':bnext<CR>')
+        nmap('<leader>bp', ':bprevious<CR>')
+        nmap('<leader>nh', ':noh<CR>')
+
+        --- Telescope ---
+        nmap('<leader>ff', ':Telescope find_files<CR>')
+        nmap('<leader>fg', ':Telescope git_files<CR>')
+        nmap('<leader>bm', ':Telescope buffers<CR>')
+        nmap('<leader>qf', ':Telescope quickfix<CR>')
+
+
+
+        --- LSP ---
+        nmap('<leader>fc', ':ClangdSwitchSourceHeader')
+        nmap('gd' ,':lua vim.lsp.buf.definition()<cr>')
+        nmap('<leader>rn', ':lua vim.lsp.buf.rename()<cr>')
+        nmap('K', '<cmd>lua vim.lsp.buf.hover()<CR>')
+        nmap("<leader>fm", "<cmd>lua vim.lsp.buf.format()<CR>")
+
+        --- CMake Tools ---
+        nmap('<leader>cm', ':CMakeRun<CR>')
+
+        --- DAP (Debugger) ---
+        nmap('<leader>di', ':CMakeDebug<CR>')
+        nmap('<leader>db', ':lua require("dap").toggle_breakpoint()<CR>')
+        nmap('<leader>dc', ':lua require("dap").continue()<CR>')
+        nmap('<leader>ds', ':lua require("dap").step_over()<CR>')
+
+        --- DB ---
+        nmap('<leader>dad', ':DBUIToggle<CR>')
+
+        -- Oil
+        nmap('-', '<CMD>Oil<CR>')
+
+        -- Trouble 
+        nmap('<leader>tt', ':ToggleTerm<CR>')
+        nmap('<leader>ti', ':Trouble diagnostics toggle pinned=true win.relative=win win.position=bottom<CR>')
+        nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.position=right<CR>')
+        '';
   };
 
-  
+
 }
