@@ -12,13 +12,17 @@
     };
     statusline.lualine.enable  = true;
     autocomplete.nvim-cmp = {
-    enable = true;
-    mappings = {
-      confirm = "<Tab>";
-      next = "<C-n>";
-      previous = "<C-p>";
+      enable = true;
+      sourcePlugins = ["luasnip"];
+      setupOpts = {
+        sourcePlugins = ["vim-dadbod-completion"];
+      };
+      mappings = {
+        confirm = "<Tab>";
+        next = "<C-n>";
+        previous = "<C-p>";
+      };
     };
-  };
     autopairs.nvim-autopairs.enable = true;
     useSystemClipboard = true;
     
@@ -91,7 +95,7 @@
           dashboard.button("e", "  New file", ":ene <BAR> startinsert <CR>"),
           dashboard.button("r", "󰙰  Recently used files", ":Telescope oldfiles <CR>"),
           dashboard.button("t", "󱘢  Find text", ":Telescope live_grep <CR>"),
-          dashboard.button("c", "  Configuration", ":e ~/.config/nvim/init.vim<CR>"),
+          dashboard.button("c", "󱄅  Configuration", ":e /etc/nixos/flake.nix<CR>"),
           dashboard.button("q", "󰈆  Quit Neovim", ":qa<CR>"),
         }
 
@@ -117,7 +121,7 @@
       };
       "godbolt.nvim" = {
         package = godbolt-nvim;
-        cmd = "GodBolt";
+        cmd = ["GodBolt"];
         after = ''
           require'godbolt'.setup()
         '';
@@ -128,14 +132,14 @@
       };
       "oil.nvim" = {
         package = oil-nvim;
-        cmd = "Oil";
+        cmd = ["Oil"];
         after = ''
         require'oil'.setup()
         '';
       };
       "otter.nvim" = {
         package = otter-nvim;
-        cmd = "Otter";
+        cmd = ["Otter"];
         after = ''
           require'otter'.activate()
         '';
@@ -162,7 +166,7 @@
       };
       "telescope.nvim" = {
         package = telescope-nvim;
-        cmd = "Telescope";
+        cmd = ["Telescope"];
         after = ''
           require('telescope').setup{
             defaults = {
@@ -174,10 +178,13 @@
       "tmux.nvim" = {
         package = tmux-nvim;
         lazy = false;
+        after = ''
+          require'tmux'.setup()
+        '';
       };
       "toggleterm.nvim" = {
         package = toggleterm-nvim;
-        cmd = "ToggleTerm";
+        cmd = ["ToggleTerm"];
         after = ''
           require'toggleterm'.setup{
             start_in_insert = true,
@@ -187,11 +194,25 @@
       };
       "trouble.nvim" = {
         package = trouble-nvim;
-        cmd = "Trouble";
+        cmd = ["Trouble"];
         after = ''
           require'trouble'.setup()
         '';
       };
+      "vim-dadbod" = {
+        package = vim-dadbod;
+      };
+      "vim-dadbod-ui" = {
+        package = vim-dadbod-ui;
+        cmd = [ "DBUI" "DBUIToggle" "DBUIAddConnection" "DBUIFindBuffer" ];
+        before = ''
+          vim.g.db_ui_use_nerd_fonts = 1
+        '';
+      };
+      "vim-dadbod-completion" = {
+        package = vim-dadbod-completion; 
+      };
+
       "cmake-tools.nvim" = {
         package = cmake-tools-nvim;
         ft = ["c" "cpp" "h" "hpp"];
@@ -222,8 +243,7 @@
             on_new_task = function(task)
             end,   -- a function that gets overseer.Task when it is created, before calling `task:start`
           },
-        }
-        '';
+        }'';
         };
         };
         luaConfigRC.myconfig = /*lua*/ ''
