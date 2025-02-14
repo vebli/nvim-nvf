@@ -11,9 +11,9 @@
       style = "main";
     };
     statusline.lualine.enable  = true;
+    snippets.luasnip.enable = true;
     autocomplete.nvim-cmp = {
       enable = true;
-      sourcePlugins = ["luasnip"];
       setupOpts = {
         sourcePlugins = ["vim-dadbod-completion"];
       };
