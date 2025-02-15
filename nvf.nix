@@ -29,9 +29,11 @@ in
     snippets.luasnip = {
       enable = true;
       loaders = 
-        ''require("luasnip.loaders.from_lua").lazy_load({paths = "${snippets_dir}"})
+        # require("luasnip.loaders.from_lua").lazy_load({paths = "${snippets_dir}"})
+        ''
+        require("luasnip.loaders.from_lua").lazy_load({paths = "~/.config/nvim/lua/snippets"})
         '';
-      #RESULT :# require'luasnip.loaders.from_lua'.load({paths = "/nix/store/cgy0g396vbw0sy08zhij3jv8ynxcjag3-Lua-config-files/lua/snippets"})
+      setupOpts.enable_autosnippets = true;
     };
 
     autocomplete.nvim-cmp = {
@@ -132,6 +134,9 @@ in
         package = lsp_signature-nvim;
         event =  ["BufReadPost" "BufNewFile"];
         after = insert_plugin_config "signature";
+      };
+      "luasnip" = {
+        after = insert_plugin_config "luasnip";
       };
       "telescope.nvim" = {
         package = telescope-nvim;

@@ -1,9 +1,12 @@
 vim.g.mapleader = " "
-local keymap = vim.api.nvim_set_keymap
 local opts = {noremap = true}
-local function nmap(key, map)
-  keymap('n', key, map, opts)
+local function nmap(key, map, desc)
+  if desc then
+    opts.desc = desc
+  end
+  vim.keymap.set('n', key, map, opts)
 end
+
 
 --- Built-in ---
 nmap('<leader>bn', ':bnext<CR>')
