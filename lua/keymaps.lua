@@ -7,6 +7,13 @@ local function nmap(key, map, desc)
   vim.keymap.set('n', key, map, opts)
 end
 
+local function toggle_virtual_text()
+  if vim.diagnostic.config().virtual_text == true then
+    vim.diagnostic.config({virtual_text = false})
+  else
+    vim.diagnostic.config({virtual_text = true})
+  end
+end
 
 --- Built-in ---
 nmap('<leader>bn', ':bnext<CR>')
@@ -27,6 +34,7 @@ nmap('gd' ,':lua vim.lsp.buf.definition()<cr>')
 nmap('<leader>rn', ':lua vim.lsp.buf.rename()<cr>')
 nmap('K', '<cmd>lua vim.lsp.buf.hover()<CR>')
 nmap("<leader>fm", "<cmd>lua vim.lsp.buf.format()<CR>")
+nmap("<leader>vo", toggle_virtual_text)
 
 --- CMake Tools ---
 nmap('<leader>cm', ':CMakeRun<CR>')
