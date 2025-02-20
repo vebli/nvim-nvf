@@ -10,11 +10,11 @@ let
     (builtins.readFile "${lua_plugin_dir}/${name}.lua")
   );
 in 
-{
+  {
   vim = {
     luaConfigRC.myconfig = ''
-    ${options}
-    ${keymaps}
+      ${options}
+      ${keymaps}
     '';
     spellcheck = {
       enable = true;
@@ -50,7 +50,7 @@ in
     };
     autopairs.nvim-autopairs.enable = true;
     useSystemClipboard = true;
-    
+
     visuals = {
       nvim-web-devicons.enable = true;
       rainbow-delimiters.enable = true;
@@ -61,10 +61,24 @@ in
     lsp = {
       enable = true;
       lightbulb.enable = true;
-      lspconfig.enable = true;
+      lspconfig = {
+        enable = true;
+        sources = {
+          texlab = ''
+          lspconfig.texlab.setup{
+            capabilities = capabilities;
+          }
+          '';
+        };
+      };
       lspkind.enable = true;
     };
 
+    debugger.nvim-dap = {
+      enable = true;
+      # sources = ["gdb"];
+      ui.enable = true;
+    };
     languages = {
       enableLSP = true;
       enableTreesitter = true;
@@ -179,6 +193,4 @@ in
       };
     };
   };
-
-
 }
