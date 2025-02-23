@@ -1,7 +1,7 @@
 {pkgs, ...}:
 pkgs.stdenv.mkDerivation {
   name = "Lua config files";
-  src = ../.;
+  src = ./.;
   buildInputs = [];
   phases = ["installPhase"];
   installPhase = ''
