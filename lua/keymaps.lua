@@ -53,5 +53,5 @@ nmap('-', '<CMD>Oil<CR>')
 
 -- Trouble 
 nmap('<leader>tt', ':ToggleTerm<CR>')
-nmap('<leader>ti', ':Trouble diagnostics toggle pinned=true win.relative=win win.position=bottom<CR>')
+nmap('<leader>ti', ':Trouble diagnostics toggle pinned=true win.relative=win win.position=bottom<CR><CR>')
 nmap('<leader>ts', ':Trouble symbols toggle pinned=true win.relative=win win.position=right<CR>')
