@@ -100,12 +100,13 @@ in
       ts.enable = true;
       lua.enable = true;
       python.enable = true;
+      rust.enable = true;
       css.enable = true;
       go.enable = true;
       haskell.enable = true;
+      ocaml.enable = true;
       html.enable = true;
       java.enable = true;
-      ocaml.enable = true;
       php.enable = true;
       r.enable = true;
       ruby.enable = true;
@@ -141,15 +142,6 @@ in
         cmd = ["Oil"];
         after = insert_plugin_config "oil";
       };
-      "otter.nvim" = {
-        package = otter-nvim;
-        cmd = ["Otter"];
-        after = insert_plugin_config "otter";
-      };
-      "overseer.nvim" = {
-        package = overseer-nvim;
-        after = insert_plugin_config "overseer";
-      };
       "lsp_signature.nvim" = {
         package = lsp_signature-nvim;
         event =  ["BufReadPost" "BufNewFile"];
@@ -167,11 +159,6 @@ in
         package = tmux-nvim;
         lazy = false;
         after = insert_plugin_config "tmux-nvim";
-      };
-      "toggleterm.nvim" = {
-        package = toggleterm-nvim;
-        cmd = ["ToggleTerm"];
-        after = insert_plugin_config "toggle-term";
       };
       "trouble.nvim" = {
         package = trouble-nvim;
@@ -191,12 +178,26 @@ in
       "vim-dadbod-completion" = {
         package = vim-dadbod-completion; 
       };
-
-      "cmake-tools.nvim" = {
-        package = cmake-tools-nvim;
-        ft = ["c" "cpp" "h" "hpp" "txt"];
-        after = insert_plugin_config "cmake-tools";
+      "otter.nvim" = {
+        package = otter-nvim;
+        cmd = ["Otter"];
+        after = insert_plugin_config "otter";
       };
+      # "overseer.nvim" = {
+      #   package = overseer-nvim;
+      #   after = insert_plugin_config "overseer";
+      # };
+      # "toggleterm.nvim" = {
+      #   package = toggleterm-nvim;
+      #   cmd = ["ToggleTerm"];
+      #   after = insert_plugin_config "toggle-term";
+      # };
+
+      # "cmake-tools.nvim" = {
+      #   package = cmake-tools-nvim;
+      #   ft = ["c" "cpp" "h" "hpp" "txt"];
+      #   after = insert_plugin_config "cmake-tools";
+      # };
     };
   };
 }
